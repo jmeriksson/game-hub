@@ -1,34 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Grid, GridItem, Show } from "@chakra-ui/react"
+import NavBar from "./components/navbar"
+import GameGrid from "./components/GameGrid"
+import GenreList from "./components/GenreList"
+import { TGenre } from "./hooks/useGenres"
+import { useState } from "react"
+
+export type TGameQuery = {
+	genre?: TGenre
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [gameQuery, setGameQuery] = useState<TGameQuery>({} as TGameQuery)
+
+	const handleGenreSelect = (selectedGenre: TGenre) => {
+		setGameQuery({
+			genre: selectedGenre
+		})
+	}
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Grid templateAreas={[
+			`"nav" "main"`,
+			`"nav" "main"`,
+			`"nav" "main"`,
+			`"nav nav" "aside main"`,
+			`"nav nav" "aside main"`,
+		]}
+		templateColumns={[
+			"1fr",
+			"1fr",
+			"1fr",
+			"200px 1fr",
+			"250px 1fr",
+		]}
+		p={6}>
+			<GridItem area="nav"><NavBar /></GridItem>
+			<Show above="lg">
+				<GridItem area="aside"><GenreList onSelectGenre={handleGenreSelect} /></GridItem>
+			</Show>
+			<GridItem area="main"><GameGrid gameQuery={gameQuery} /></GridItem>
+    </Grid>
   )
 }
 
